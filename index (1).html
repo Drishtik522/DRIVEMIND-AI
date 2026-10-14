@@ -1,0 +1,504 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DriveMind AI | Vehicle Intelligence</title>
+  <meta name="description" content="A driving-risk intelligence and vehicle safety prototype.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="#">
+        <span class="brand-icon">D</span>
+        <span>DRIVEMIND<span class="brand-ai"> AI</span>
+          <small>VEHICLE INTELLIGENCE</small>
+        </span>
+      </a>
+
+      <div class="side-label">WORKSPACE</div>
+      <button class="nav-item active" data-page="overview">
+        <span>◈</span> Overview
+      </button>
+      <button class="nav-item" data-page="driving">
+        <span>⌁</span> Driving Analysis
+      </button>
+      <button class="nav-item" data-page="vehicle">
+        <span>▣</span> Vehicle Status
+      </button>
+      <button class="nav-item" data-page="history">
+        <span>◷</span> Trip History
+      </button>
+
+      <div class="sidebar-bottom">
+        <div class="prototype-badge"><span></span> PROTOTYPE MODE</div>
+        <p>Software simulation<br>Not connected to a real vehicle</p>
+        <div class="profile">
+          <div class="avatar">DM</div>
+          <div><strong>Demo Driver</strong><small>Safety workspace</small></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">AUTOMOTIVE AI / INTELLIGENCE</div>
+          <h1 id="pageTitle">Driving Overview</h1>
+        </div>
+        <div class="top-right">
+          <span class="demo-label"><span></span> SIMULATED DATA</span>
+          <button class="button button-outline" id="resetBtn">↻ Reset demo</button>
+        </div>
+      </header>
+
+      <div class="notice">
+        <span>ⓘ</span>
+        <div><strong>Demonstration environment</strong>
+          <p>All driving readings are simulated. Risk scores are illustrative, not validated safety predictions.</p>
+        </div>
+      </div>
+
+      <section class="page active" id="overview">
+        <div class="welcome">
+          <div>
+            <div class="eyebrow cyan">YOUR DRIVE. UNDERSTOOD.</div>
+            <h2>See the risk.<br><span>Understand the reason.</span></h2>
+            <p>Explore driving patterns and receive clear, explainable safety feedback.</p>
+            <button class="button button-primary" id="startBtn">▶ Start simulated drive</button>
+            <button class="button button-outline" id="stopBtn">Ⅱ Pause drive</button>
+          </div>
+          <div class="hero-visual">
+            <div class="radar radar-one"></div>
+            <div class="radar radar-two"></div>
+            <div class="road-line"></div>
+            <div class="car">▰</div>
+            <div class="radar-caption">DRIVE INTELLIGENCE <span>● ACTIVE</span></div>
+          </div>
+        </div>
+
+        <div class="section-heading">
+          <div><h3>Live driving indicators</h3><p>Updates when the simulation runs</p></div>
+          <span class="live-pill"><span></span> <b id="driveState">STANDBY</b></span>
+        </div>
+
+        <div class="metrics">
+          <article class="metric-card">
+            <div class="metric-top"><span>VEHICLE SPEED</span><span class="metric-icon">↗</span></div>
+            <div class="metric-value"><span id="speedValue">42</span><small>km/h</small></div>
+            <div class="metric-foot">Simulated current speed</div>
+            <div class="mini-track"><span id="speedBar" style="width:28%"></span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>RISK INDEX</span><span class="metric-icon">◉</span></div>
+            <div class="metric-value"><span id="riskValue">18</span><small>/ 100</small></div>
+            <div class="metric-foot" id="riskFoot">Low estimated risk</div>
+            <div class="mini-track risk-track"><span id="riskBar" style="width:18%"></span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>HARSH BRAKING</span><span class="metric-icon">↘</span></div>
+            <div class="metric-value"><span id="brakeValue">0</span><small>events</small></div>
+            <div class="metric-foot">Events in this demo trip</div>
+            <div class="mini-track"><span id="brakeBar" style="width:4%"></span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>TRIP DISTANCE</span><span class="metric-icon">⌁</span></div>
+            <div class="metric-value"><span id="distanceValue">0.0</span><small>km</small></div>
+            <div class="metric-foot">Estimated simulation distance</div>
+            <div class="mini-track"><span id="distanceBar" style="width:5%"></span></div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel risk-panel">
+            <div class="panel-heading">
+              <div><h3>Driving risk assessment</h3><p>Explainable score from simulated inputs</p></div>
+              <span class="small-tag">RULE-BASED</span>
+            </div>
+            <div class="risk-content">
+              <div class="gauge" id="gauge">
+                <div class="gauge-inner">
+                  <strong id="gaugeValue">18</strong>
+                  <span>RISK SCORE</span>
+                </div>
+              </div>
+              <div class="risk-description">
+                <span class="status status-low" id="riskStatus">LOW RISK</span>
+                <h3 id="riskHeadline">Drive smoothly</h3>
+                <p id="riskExplanation">The current simulated inputs indicate a relatively low risk score.</p>
+                <div class="factor-list" id="factorList"></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div><h3>Driving behaviour</h3><p>Latest simulated readings</p></div>
+              <span class="small-tag">LIVE DEMO</span>
+            </div>
+            <div class="behaviour-list">
+              <div class="behaviour-row">
+                <span class="behaviour-icon">↗</span>
+                <div class="behaviour-text"><strong>Speed pattern</strong><small id="speedHint">Within demo range</small></div>
+                <span class="status status-low" id="speedStatus">NORMAL</span>
+              </div>
+              <div class="behaviour-row">
+                <span class="behaviour-icon">⌁</span>
+                <div class="behaviour-text"><strong>Acceleration</strong><small id="accelHint">Smooth acceleration</small></div>
+                <span class="status status-low" id="accelStatus">SMOOTH</span>
+              </div>
+              <div class="behaviour-row">
+                <span class="behaviour-icon">▾</span>
+                <div class="behaviour-text"><strong>Braking pattern</strong><small id="brakeHint">No harsh braking detected in demo</small></div>
+                <span class="status status-low" id="brakeStatus">NORMAL</span>
+              </div>
+            </div>
+            <div class="recommendation" id="recommendation">
+              <span>✦</span><div><strong>Safety insight</strong><p id="recommendationText">Maintain a safe following distance and anticipate traffic changes.</p></div>
+            </div>
+          </article>
+        </div>
+
+        <article class="panel input-panel">
+          <div class="panel-heading">
+            <div><h3>Driving scenario simulator</h3><p>Change the values to explore different risk scenarios</p></div>
+            <span class="small-tag">INTERACTIVE</span>
+          </div>
+          <div class="input-grid">
+            <label>Speed <strong><span id="speedInputLabel">42</span> km/h</strong>
+              <input id="speedInput" type="range" min="0" max="140" value="42">
+              <div class="range-labels"><span>0 km/h</span><span>140 km/h</span></div>
+            </label>
+            <label>Acceleration <strong><span id="accelInputLabel">0.8</span> m/s²</strong>
+              <input id="accelInput" type="range" min="-6" max="6" step="0.1" value="0.8">
+              <div class="range-labels"><span>-6 braking</span><span>+6 accelerating</span></div>
+            </label>
+            <label>Harsh braking events <strong><span id="brakeInputLabel">0</span></strong>
+              <input id="brakeInput" type="range" min="0" max="10" value="0">
+              <div class="range-labels"><span>0 events</span><span>10 events</span></div>
+            </label>
+          </div>
+          <div class="scenario-actions">
+            <button class="button button-primary" id="analyzeBtn">Analyze scenario →</button>
+            <button class="button button-outline" id="riskyBtn">Load risky scenario</button>
+            <button class="button button-outline" id="safeBtn">Load safe scenario</button>
+          </div>
+          <p class="input-disclaimer">The score is a demonstration heuristic, not a validated real-world crash probability or driving assessment.</p>
+        </article>
+      </section>
+
+      <section class="page" id="driving">
+        <div class="page-intro"><h2>Driving Analysis</h2><p>Inspect the factors behind the current simulated driving-risk score.</p></div>
+        <div class="metrics">
+          <article class="metric-card"><div class="metric-top"><span>RISK SCORE</span></div><div class="metric-value"><span id="analysisRisk">18</span><small>/100</small></div><div class="metric-foot">Illustrative index</div></article>
+          <article class="metric-card"><div class="metric-top"><span>SPEED</span></div><div class="metric-value"><span id="analysisSpeed">42</span><small>km/h</small></div><div class="metric-foot">Current simulated input</div></article>
+          <article class="metric-card"><div class="metric-top"><span>ACCELERATION</span></div><div class="metric-value"><span id="analysisAccel">0.8</span><small>m/s²</small></div><div class="metric-foot">Current simulated input</div></article>
+        </div>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>Risk factor breakdown</h3><p>Contribution of each input to the illustrative score</p></div></div>
+          <div id="breakdown" class="breakdown"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>What the score means</h3><p>Illustrative bands for this prototype</p></div></div>
+          <div class="legend-grid">
+            <div><span class="legend-dot green"></span><strong>0–24 · Low</strong><p>Lower score under the current demo rules.</p></div>
+            <div><span class="legend-dot yellow"></span><strong>25–49 · Moderate</strong><p>Review the driving inputs and remain attentive.</p></div>
+            <div><span class="legend-dot orange"></span><strong>50–74 · High</strong><p>Potentially concerning demo inputs; reduce risk where safe.</p></div>
+            <div><span class="legend-dot red"></span><strong>75–100 · Critical</strong><p>High score under the demo rules; seek a safe response.</p></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="page" id="vehicle">
+        <div class="page-intro"><h2>Vehicle Status</h2><p>Example vehicle indicators for demonstrating an automotive intelligence interface.</p></div>
+        <div class="notice warning"><span>!</span><div><strong>Illustrative data only</strong><p>These values are not read from an actual vehicle. This prototype cannot diagnose mechanical faults.</p></div></div>
+        <div class="metrics">
+          <article class="metric-card"><div class="metric-top"><span>ENGINE TEMPERATURE</span></div><div class="metric-value"><span id="engineTemp">88</span><small>°C</small></div><div class="metric-foot">Simulated sample value</div></article>
+          <article class="metric-card"><div class="metric-top"><span>BATTERY VOLTAGE</span></div><div class="metric-value"><span id="batteryVolt">12.6</span><small>V</small></div><div class="metric-foot">Simulated sample value</div></article>
+          <article class="metric-card"><div class="metric-top"><span>FUEL LEVEL</span></div><div class="metric-value"><span id="fuelLevel">68</span><small>%</small></div><div class="metric-foot">Simulated sample value</div></article>
+        </div>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>Vehicle indicators</h3><p>Demo values are fixed examples, not a health diagnosis</p></div></div>
+          <div class="vehicle-indicators">
+            <div><span>Engine temperature</span><strong class="status status-low">SAMPLE NORMAL</strong></div>
+            <div><span>Battery voltage</span><strong class="status status-low">SAMPLE NORMAL</strong></div>
+            <div><span>Diagnostic connection</span><strong class="status status-medium">NOT CONNECTED</strong></div>
+            <div><span>On-board diagnostics (OBD-II)</span><strong class="status status-medium">NOT INTEGRATED</strong></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="page" id="history">
+        <div class="page-intro"><h2>Trip History</h2><p>Review and export the demo trips analyzed during this browser session.</p></div>
+        <div class="metrics">
+          <article class="metric-card"><div class="metric-top"><span>TRIPS SAVED</span></div><div class="metric-value"><span id="tripCount">0</span></div><div class="metric-foot">Browser-local demo records</div></article>
+          <article class="metric-card"><div class="metric-top"><span>AVERAGE RISK</span></div><div class="metric-value"><span id="avgRisk">0</span><small>/100</small></div><div class="metric-foot">Across saved demo trips</div></article>
+        </div>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>Recorded trips</h3><p>Stored only in this browser</p></div><button class="button button-outline" id="exportBtn">↓ Export CSV</button></div>
+          <div class="table-wrap"><table><thead><tr><th>TIME</th><th>SPEED</th><th>ACCELERATION</th><th>BRAKING EVENTS</th><th>RISK SCORE</th><th>LEVEL</th></tr></thead><tbody id="historyRows"></tbody></table></div>
+          <div class="empty-state" id="emptyHistory">No trips saved yet. Start a simulated drive to create a record.</div>
+        </article>
+      </section>
+
+      <footer>DRIVEMIND AI <span>•</span> Hackathon prototype <span>•</span> Not for real-time driving decisions</footer>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DriveMind AI | Vehicle Intelligence</title>
+  <meta name="description" content="A driving-risk intelligence and vehicle safety prototype.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="#">
+        <span class="brand-icon">D</span>
+        <span>DRIVEMIND<span class="brand-ai"> AI</span>
+          <small>VEHICLE INTELLIGENCE</small>
+        </span>
+      </a>
+
+      <div class="side-label">WORKSPACE</div>
+      <button class="nav-item active" data-page="overview">
+        <span>◈</span> Overview
+      </button>
+      <button class="nav-item" data-page="driving">
+        <span>⌁</span> Driving Analysis
+      </button>
+      <button class="nav-item" data-page="vehicle">
+        <span>▣</span> Vehicle Status
+      </button>
+      <button class="nav-item" data-page="history">
+        <span>◷</span> Trip History
+      </button>
+
+      <div class="sidebar-bottom">
+        <div class="prototype-badge"><span></span> PROTOTYPE MODE</div>
+        <p>Software simulation<br>Not connected to a real vehicle</p>
+        <div class="profile">
+          <div class="avatar">DM</div>
+          <div><strong>Demo Driver</strong><small>Safety workspace</small></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">AUTOMOTIVE AI / INTELLIGENCE</div>
+          <h1 id="pageTitle">Driving Overview</h1>
+        </div>
+        <div class="top-right">
+          <span class="demo-label"><span></span> SIMULATED DATA</span>
+          <button class="button button-outline" id="resetBtn">↻ Reset demo</button>
+        </div>
+      </header>
+
+      <div class="notice">
+        <span>ⓘ</span>
+        <div><strong>Demonstration environment</strong>
+          <p>All driving readings are simulated. Risk scores are illustrative, not validated safety predictions.</p>
+        </div>
+      </div>
+
+      <section class="page active" id="overview">
+        <div class="welcome">
+          <div>
+            <div class="eyebrow cyan">YOUR DRIVE. UNDERSTOOD.</div>
+            <h2>See the risk.<br><span>Understand the reason.</span></h2>
+            <p>Explore driving patterns and receive clear, explainable safety feedback.</p>
+            <button class="button button-primary" id="startBtn">▶ Start simulated drive</button>
+            <button class="button button-outline" id="stopBtn">Ⅱ Pause drive</button>
+          </div>
+          <div class="hero-visual">
+            <div class="radar radar-one"></div>
+            <div class="radar radar-two"></div>
+            <div class="road-line"></div>
+            <div class="car">▰</div>
+            <div class="radar-caption">DRIVE INTELLIGENCE <span>● ACTIVE</span></div>
+          </div>
+        </div>
+
+        <div class="section-heading">
+          <div><h3>Live driving indicators</h3><p>Updates when the simulation runs</p></div>
+          <span class="live-pill"><span></span> <b id="driveState">STANDBY</b></span>
+        </div>
+
+        <div class="metrics">
+          <article class="metric-card">
+            <div class="metric-top"><span>VEHICLE SPEED</span><span class="metric-icon">↗</span></div>
+            <div class="metric-value"><span id="speedValue">42</span><small>km/h</small></div>
+            <div class="metric-foot">Simulated current speed</div>
+            <div class="mini-track"><span id="speedBar" style="width:28%"></span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>RISK INDEX</span><span class="metric-icon">◉</span></div>
+            <div class="metric-value"><span id="riskValue">18</span><small>/ 100</small></div>
+            <div class="metric-foot" id="riskFoot">Low estimated risk</div>
+            <div class="mini-track risk-track"><span id="riskBar" style="width:18%"></span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>HARSH BRAKING</span><span class="metric-icon">↘</span></div>
+            <div class="metric-value"><span id="brakeValue">0</span><small>events</small></div>
+            <div class="metric-foot">Events in this demo trip</div>
+            <div class="mini-track"><span id="brakeBar" style="width:4%"></span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>TRIP DISTANCE</span><span class="metric-icon">⌁</span></div>
+            <div class="metric-value"><span id="distanceValue">0.0</span><small>km</small></div>
+            <div class="metric-foot">Estimated simulation distance</div>
+            <div class="mini-track"><span id="distanceBar" style="width:5%"></span></div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel risk-panel">
+            <div class="panel-heading">
+              <div><h3>Driving risk assessment</h3><p>Explainable score from simulated inputs</p></div>
+              <span class="small-tag">RULE-BASED</span>
+            </div>
+            <div class="risk-content">
+              <div class="gauge" id="gauge">
+                <div class="gauge-inner">
+                  <strong id="gaugeValue">18</strong>
+                  <span>RISK SCORE</span>
+                </div>
+              </div>
+              <div class="risk-description">
+                <span class="status status-low" id="riskStatus">LOW RISK</span>
+                <h3 id="riskHeadline">Drive smoothly</h3>
+                <p id="riskExplanation">The current simulated inputs indicate a relatively low risk score.</p>
+                <div class="factor-list" id="factorList"></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div><h3>Driving behaviour</h3><p>Latest simulated readings</p></div>
+              <span class="small-tag">LIVE DEMO</span>
+            </div>
+            <div class="behaviour-list">
+              <div class="behaviour-row">
+                <span class="behaviour-icon">↗</span>
+                <div class="behaviour-text"><strong>Speed pattern</strong><small id="speedHint">Within demo range</small></div>
+                <span class="status status-low" id="speedStatus">NORMAL</span>
+              </div>
+              <div class="behaviour-row">
+                <span class="behaviour-icon">⌁</span>
+                <div class="behaviour-text"><strong>Acceleration</strong><small id="accelHint">Smooth acceleration</small></div>
+                <span class="status status-low" id="accelStatus">SMOOTH</span>
+              </div>
+              <div class="behaviour-row">
+                <span class="behaviour-icon">▾</span>
+                <div class="behaviour-text"><strong>Braking pattern</strong><small id="brakeHint">No harsh braking detected in demo</small></div>
+                <span class="status status-low" id="brakeStatus">NORMAL</span>
+              </div>
+            </div>
+            <div class="recommendation" id="recommendation">
+              <span>✦</span><div><strong>Safety insight</strong><p id="recommendationText">Maintain a safe following distance and anticipate traffic changes.</p></div>
+            </div>
+          </article>
+        </div>
+
+        <article class="panel input-panel">
+          <div class="panel-heading">
+            <div><h3>Driving scenario simulator</h3><p>Change the values to explore different risk scenarios</p></div>
+            <span class="small-tag">INTERACTIVE</span>
+          </div>
+          <div class="input-grid">
+            <label>Speed <strong><span id="speedInputLabel">42</span> km/h</strong>
+              <input id="speedInput" type="range" min="0" max="140" value="42">
+              <div class="range-labels"><span>0 km/h</span><span>140 km/h</span></div>
+            </label>
+            <label>Acceleration <strong><span id="accelInputLabel">0.8</span> m/s²</strong>
+              <input id="accelInput" type="range" min="-6" max="6" step="0.1" value="0.8">
+              <div class="range-labels"><span>-6 braking</span><span>+6 accelerating</span></div>
+            </label>
+            <label>Harsh braking events <strong><span id="brakeInputLabel">0</span></strong>
+              <input id="brakeInput" type="range" min="0" max="10" value="0">
+              <div class="range-labels"><span>0 events</span><span>10 events</span></div>
+            </label>
+          </div>
+          <div class="scenario-actions">
+            <button class="button button-primary" id="analyzeBtn">Analyze scenario →</button>
+            <button class="button button-outline" id="riskyBtn">Load risky scenario</button>
+            <button class="button button-outline" id="safeBtn">Load safe scenario</button>
+          </div>
+          <p class="input-disclaimer">The score is a demonstration heuristic, not a validated real-world crash probability or driving assessment.</p>
+        </article>
+      </section>
+
+      <section class="page" id="driving">
+        <div class="page-intro"><h2>Driving Analysis</h2><p>Inspect the factors behind the current simulated driving-risk score.</p></div>
+        <div class="metrics">
+          <article class="metric-card"><div class="metric-top"><span>RISK SCORE</span></div><div class="metric-value"><span id="analysisRisk">18</span><small>/100</small></div><div class="metric-foot">Illustrative index</div></article>
+          <article class="metric-card"><div class="metric-top"><span>SPEED</span></div><div class="metric-value"><span id="analysisSpeed">42</span><small>km/h</small></div><div class="metric-foot">Current simulated input</div></article>
+          <article class="metric-card"><div class="metric-top"><span>ACCELERATION</span></div><div class="metric-value"><span id="analysisAccel">0.8</span><small>m/s²</small></div><div class="metric-foot">Current simulated input</div></article>
+        </div>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>Risk factor breakdown</h3><p>Contribution of each input to the illustrative score</p></div></div>
+          <div id="breakdown" class="breakdown"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>What the score means</h3><p>Illustrative bands for this prototype</p></div></div>
+          <div class="legend-grid">
+            <div><span class="legend-dot green"></span><strong>0–24 · Low</strong><p>Lower score under the current demo rules.</p></div>
+            <div><span class="legend-dot yellow"></span><strong>25–49 · Moderate</strong><p>Review the driving inputs and remain attentive.</p></div>
+            <div><span class="legend-dot orange"></span><strong>50–74 · High</strong><p>Potentially concerning demo inputs; reduce risk where safe.</p></div>
+            <div><span class="legend-dot red"></span><strong>75–100 · Critical</strong><p>High score under the demo rules; seek a safe response.</p></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="page" id="vehicle">
+        <div class="page-intro"><h2>Vehicle Status</h2><p>Example vehicle indicators for demonstrating an automotive intelligence interface.</p></div>
+        <div class="notice warning"><span>!</span><div><strong>Illustrative data only</strong><p>These values are not read from an actual vehicle. This prototype cannot diagnose mechanical faults.</p></div></div>
+        <div class="metrics">
+          <article class="metric-card"><div class="metric-top"><span>ENGINE TEMPERATURE</span></div><div class="metric-value"><span id="engineTemp">88</span><small>°C</small></div><div class="metric-foot">Simulated sample value</div></article>
+          <article class="metric-card"><div class="metric-top"><span>BATTERY VOLTAGE</span></div><div class="metric-value"><span id="batteryVolt">12.6</span><small>V</small></div><div class="metric-foot">Simulated sample value</div></article>
+          <article class="metric-card"><div class="metric-top"><span>FUEL LEVEL</span></div><div class="metric-value"><span id="fuelLevel">68</span><small>%</small></div><div class="metric-foot">Simulated sample value</div></article>
+        </div>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>Vehicle indicators</h3><p>Demo values are fixed examples, not a health diagnosis</p></div></div>
+          <div class="vehicle-indicators">
+            <div><span>Engine temperature</span><strong class="status status-low">SAMPLE NORMAL</strong></div>
+            <div><span>Battery voltage</span><strong class="status status-low">SAMPLE NORMAL</strong></div>
+            <div><span>Diagnostic connection</span><strong class="status status-medium">NOT CONNECTED</strong></div>
+            <div><span>On-board diagnostics (OBD-II)</span><strong class="status status-medium">NOT INTEGRATED</strong></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="page" id="history">
+        <div class="page-intro"><h2>Trip History</h2><p>Review and export the demo trips analyzed during this browser session.</p></div>
+        <div class="metrics">
+          <article class="metric-card"><div class="metric-top"><span>TRIPS SAVED</span></div><div class="metric-value"><span id="tripCount">0</span></div><div class="metric-foot">Browser-local demo records</div></article>
+          <article class="metric-card"><div class="metric-top"><span>AVERAGE RISK</span></div><div class="metric-value"><span id="avgRisk">0</span><small>/100</small></div><div class="metric-foot">Across saved demo trips</div></article>
+        </div>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>Recorded trips</h3><p>Stored only in this browser</p></div><button class="button button-outline" id="exportBtn">↓ Export CSV</button></div>
+          <div class="table-wrap"><table><thead><tr><th>TIME</th><th>SPEED</th><th>ACCELERATION</th><th>BRAKING EVENTS</th><th>RISK SCORE</th><th>LEVEL</th></tr></thead><tbody id="historyRows"></tbody></table></div>
+          <div class="empty-state" id="emptyHistory">No trips saved yet. Start a simulated drive to create a record.</div>
+        </article>
+      </section>
+
+      <footer>DRIVEMIND AI <span>•</span> Hackathon prototype <span>•</span> Not for real-time driving decisions</footer>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
